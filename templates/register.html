@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Register | HealthCare AI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+
+<body class="auth-page">
+
+
+    <div class="auth-container">
+
+
+        <!-- ================= LEFT SIDE ================= -->
+
+        <div class="auth-left">
+
+            <div class="auth-logo">
+                🏥 <span>HealthCare <b>AI</b></span>
+            </div>
+
+
+            <div class="auth-content">
+
+                <div class="auth-icon">
+                    ❤️
+                </div>
+
+
+                <h1>
+                    Start Your Health Journey 🌿
+                </h1>
+
+
+                <p>
+                    Create your account and get access to
+                    smart healthcare tools powered by AI.
+                </p>
+
+
+                <div class="auth-features">
+
+                    <div>
+                        📄
+                        <span>Analyze Medical Reports</span>
+                    </div>
+
+                    <div>
+                        🩺
+                        <span>Check Your Symptoms</span>
+                    </div>
+
+                    <div>
+                        🤖
+                        <span>Talk to AI Health Assistant</span>
+                    </div>
+
+                    <div>
+                        📊
+                        <span>Track Your Health Insights</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= RIGHT SIDE ================= -->
+
+        <div class="auth-right">
+
+            <div class="auth-card">
+
+
+                <!-- MOBILE LOGO -->
+
+                <div class="mobile-logo">
+                    🏥 HealthCare <b>AI</b>
+                </div>
+
+
+                <h2>
+                    Create your account
+                </h2>
+
+
+                <p class="auth-subtitle">
+                    Join us for a smarter healthcare experience
+                </p>
+
+
+
+                <!-- ================= REGISTER FORM ================= -->
+
+                <form
+                    method="POST"
+                    action="{{ url_for('register') }}"
+                    onsubmit="return validateRegistration()">
+
+
+                    <!-- NAME -->
+
+                    <label for="name">
+                        👤 Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="Enter your full name"
+                        autocomplete="name"
+                        required
+                    >
+
+
+
+                    <!-- EMAIL -->
+
+                    <label for="register-email">
+                        📧 Email Address
+                    </label>
+
+                    <input
+                        type="email"
+                        id="register-email"
+                        name="email"
+                        placeholder="Enter your email"
+                        autocomplete="email"
+                        required
+                    >
+
+
+
+                    <!-- PASSWORD -->
+
+                    <label for="register-password">
+                        🔒 Password
+                    </label>
+
+                    <div class="password-box">
+
+                        <input
+                            type="password"
+                            id="register-password"
+                            name="password"
+                            placeholder="Create a password"
+                            minlength="6"
+                            autocomplete="new-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="show-password"
+                            onclick="toggleRegisterPassword()"
+                            aria-label="Show or hide password">
+
+                            👁️
+
+                        </button>
+
+                    </div>
+
+
+
+                    <!-- CONFIRM PASSWORD -->
+
+                    <label for="confirm-password">
+                        🔐 Confirm Password
+                    </label>
+
+                    <div class="password-box">
+
+                        <input
+                            type="password"
+                            id="confirm-password"
+                            name="confirm_password"
+                            placeholder="Confirm your password"
+                            minlength="6"
+                            autocomplete="new-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="show-password"
+                            onclick="toggleConfirmPassword()"
+                            aria-label="Show or hide confirm password">
+
+                            👁️
+
+                        </button>
+
+                    </div>
+
+
+
+                    <!-- PASSWORD ERROR -->
+
+                    <p
+                        id="password-error"
+                        style="
+                            display:none;
+                            color:#e63946;
+                            font-size:14px;
+                            margin-top:8px;
+                        ">
+
+                        ⚠️ Passwords do not match.
+
+                    </p>
+
+
+
+                    <!-- TERMS -->
+
+                    <label class="remember">
+
+                        <input
+                            type="checkbox"
+                            id="terms"
+                            name="terms"
+                            required
+                        >
+
+                        I agree to the Terms & Privacy Policy
+
+                    </label>
+
+
+
+                    <!-- REGISTER BUTTON -->
+
+                    <button
+                        type="submit"
+                        class="auth-button">
+
+                        Create Account 🚀
+
+                    </button>
+
+                </form>
+
+
+
+                <!-- ================= DIVIDER ================= -->
+
+                <div class="divider">
+
+                    <span>OR</span>
+
+                </div>
+
+
+
+                <!-- ================= LOGIN ================= -->
+
+                <p class="register-text">
+
+                    Already have an account?
+
+                    <a href="{{ url_for('login') }}">
+                        Login 🔐
+                    </a>
+
+                </p>
+
+
+
+                <!-- ================= BACK HOME ================= -->
+
+                <a
+                    href="{{ url_for('home') }}"
+                    class="back-home">
+
+                    ← Back to Home
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script>
+
+
+        // ============================================
+        // SHOW / HIDE REGISTER PASSWORD
+        // ============================================
+
+        function toggleRegisterPassword() {
+
+            const password =
+                document.getElementById("register-password");
+
+            if (password.type === "password") {
+
+                password.type = "text";
+
+            } else {
+
+                password.type = "password";
+
+            }
+        }
+
+
+
+        // ============================================
+        // SHOW / HIDE CONFIRM PASSWORD
+        // ============================================
+
+        function toggleConfirmPassword() {
+
+            const password =
+                document.getElementById("confirm-password");
+
+            if (password.type === "password") {
+
+                password.type = "text";
+
+            } else {
+
+                password.type = "password";
+
+            }
+        }
+
+
+
+        // ============================================
+        // VALIDATE REGISTRATION
+        // ============================================
+
+        function validateRegistration() {
+
+            const password =
+                document
+                .getElementById("register-password")
+                .value;
+
+            const confirmPassword =
+                document
+                .getElementById("confirm-password")
+                .value;
+
+            const error =
+                document
+                .getElementById("password-error");
+
+
+            // Check password length
+
+            if (password.length < 6) {
+
+                error.textContent =
+                    "⚠️ Password must be at least 6 characters.";
+
+                error.style.display = "block";
+
+                return false;
+            }
+
+
+            // Check password matching
+
+            if (password !== confirmPassword) {
+
+                error.textContent =
+                    "⚠️ Passwords do not match.";
+
+                error.style.display = "block";
+
+                return false;
+            }
+
+
+            // Everything is correct
+
+            error.style.display = "none";
+
+            return true;
+        }
+
+
+    </script>
+
+
+</body>
+
+</html>

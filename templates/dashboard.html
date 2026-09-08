@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard | HealthCare AI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+
+<body class="dashboard-page">
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="sidebar">
+
+        <!-- LOGO -->
+
+        <div class="sidebar-logo">
+
+            🏥
+
+            <span>
+                HealthCare <b>AI</b>
+            </span>
+
+        </div>
+
+
+        <!-- MENU -->
+
+        <nav class="sidebar-menu">
+
+            <!-- DASHBOARD -->
+
+            <a href="{{ url_for('dashboard') }}"
+               class="active">
+
+                🏠
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <!-- AI ASSISTANT -->
+
+            <a href="{{ url_for('ai_assistant') }}">
+
+                🤖
+
+                <span>
+                    AI Assistant
+                </span>
+
+            </a>
+
+
+            <!-- MEDICAL REPORTS -->
+
+            <a href="{{ url_for('medical_report_history') }}">
+
+                📄
+
+                <span>
+                    Medical Reports
+                </span>
+
+            </a>
+
+
+            <!-- BLOOD ANALYSIS -->
+
+            <a href="#blood-analysis">
+
+                🩸
+
+                <span>
+                    Blood Analysis
+                </span>
+
+            </a>
+
+
+            <!-- SYMPTOM CHECKER -->
+
+            <a href="#symptom-checker">
+
+                🩺
+
+                <span>
+                    Symptom Checker
+                </span>
+
+            </a>
+
+
+            <!-- HEALTH INSIGHTS -->
+
+            <a href="#health-insights">
+
+                📊
+
+                <span>
+                    Health Insights
+                </span>
+
+            </a>
+
+        </nav>
+
+
+        <!-- SIDEBAR BOTTOM -->
+
+        <div class="sidebar-bottom">
+
+            <a href="#">
+
+                ⚙️
+
+                <span>
+                    Settings
+                </span>
+
+            </a>
+
+
+            <a href="{{ url_for('logout') }}"
+               class="logout-link">
+
+                🚪
+
+                <span>
+                    Logout
+                </span>
+
+            </a>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="dashboard-main">
+
+
+        <!-- =================================================
+             TOP NAVBAR
+        ================================================== -->
+
+        <header class="dashboard-navbar">
+
+            <div>
+
+                <h2>
+                    Dashboard
+                </h2>
+
+                <p>
+                    Your personalized health overview
+                </p>
+
+            </div>
+
+
+            <!-- PROFILE -->
+
+            <div class="profile-box">
+
+                <div class="profile-icon">
+
+                    {{ session.get('user_name', 'U')[0].upper() }}
+
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        {{ session.get('user_name', 'User') }}
+                    </strong>
+
+                    <small>
+                        Health Member
+                    </small>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =================================================
+             WELCOME CARD
+        ================================================== -->
+
+        <section class="welcome-card">
+
+            <div>
+
+                <span class="welcome-badge">
+
+                    🤖 AI Healthcare Assistant
+
+                </span>
+
+
+                <h1>
+
+                    Hello,
+                    {{ session.get('user_name', 'User') }}! 👋
+
+                </h1>
+
+
+                <p>
+
+                    Take care of your health with smart,
+                    simple and personalized healthcare tools.
+
+                </p>
+
+            </div>
+
+
+            <div class="welcome-icon">
+
+                🩺
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             HEALTH STATISTICS
+        ================================================== -->
+
+        <section class="health-cards">
+
+
+            <!-- OVERALL HEALTH -->
+
+            <div class="health-card">
+
+                <div class="card-icon blue">
+
+                    ❤️
+
+                </div>
+
+
+                <div>
+
+                    <p>
+                        Overall Health
+                    </p>
+
+                    <h2>
+                        82%
+                    </h2>
+
+                    <span class="positive">
+                        ↑ Looking Good
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- MEDICAL REPORTS -->
+
+            <div class="health-card">
+
+                <div class="card-icon purple">
+
+                    📄
+
+                </div>
+
+
+                <div>
+
+                    <p>
+                        Medical Reports
+                    </p>
+
+                    <h2>
+                        AI
+                    </h2>
+
+                    <span>
+                        Analyze your reports
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- SYMPTOMS -->
+
+            <div class="health-card">
+
+                <div class="card-icon green">
+
+                    🩺
+
+                </div>
+
+
+                <div>
+
+                    <p>
+                        Symptoms Checked
+                    </p>
+
+                    <h2>
+                        07
+                    </h2>
+
+                    <span>
+                        Health checks
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- AI CONSULTATIONS -->
+
+            <div class="health-card">
+
+                <div class="card-icon orange">
+
+                    🤖
+
+                </div>
+
+
+                <div>
+
+                    <p>
+                        AI Consultations
+                    </p>
+
+                    <h2>
+                        12
+                    </h2>
+
+                    <span>
+                        Conversations
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             QUICK ACTIONS
+        ================================================== -->
+
+        <section class="dashboard-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>
+                        Quick Actions
+                    </h2>
+
+                    <p>
+                        Access your healthcare tools
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="action-grid">
+
+
+                <!-- AI ASSISTANT -->
+
+                <a href="{{ url_for('ai_assistant') }}"
+                   class="action-card">
+
+                    <div class="action-icon blue-bg">
+
+                        🤖
+
+                    </div>
+
+
+                    <div>
+
+                        <h3>
+                            AI Health Assistant
+                        </h3>
+
+                        <p>
+                            Ask health-related questions
+                        </p>
+
+                    </div>
+
+
+                    <span class="arrow">
+                        →
+                    </span>
+
+                </a>
+
+
+
+                <!-- MEDICAL REPORT ANALYZER -->
+
+                <a href="{{ url_for('medical_report_history') }}"
+                   class="action-card">
+
+                    <div class="action-icon purple-bg">
+
+                        📄
+
+                    </div>
+
+
+                    <div>
+
+                        <h3>
+                            Medical Report Analyzer
+                        </h3>
+
+                        <p>
+                            Upload and understand any medical report
+                        </p>
+
+                    </div>
+
+
+                    <span class="arrow">
+                        →
+                    </span>
+
+                </a>
+
+
+
+                <!-- BLOOD ANALYSIS -->
+
+                <a href="#blood-analysis"
+                   class="action-card">
+
+                    <div class="action-icon pink-bg">
+
+                        🩸
+
+                    </div>
+
+
+                    <div>
+
+                        <h3>
+                            Blood Analysis
+                        </h3>
+
+                        <p>
+                            Check your blood report
+                        </p>
+
+                    </div>
+
+
+                    <span class="arrow">
+                        →
+                    </span>
+
+                </a>
+
+
+
+                <!-- SYMPTOM CHECKER -->
+
+                <a href="#symptom-checker"
+                   class="action-card">
+
+                    <div class="action-icon green-bg">
+
+                        🩺
+
+                    </div>
+
+
+                    <div>
+
+                        <h3>
+                            Symptom Checker
+                        </h3>
+
+                        <p>
+                            Check your symptoms
+                        </p>
+
+                    </div>
+
+
+                    <span class="arrow">
+                        →
+                    </span>
+
+                </a>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             HEALTH INSIGHTS + HEALTH TIP
+        ================================================== -->
+
+        <section class="dashboard-bottom">
+
+
+            <!-- HEALTH INSIGHTS -->
+
+            <div class="insights-card"
+                 id="health-insights">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <h2>
+                            Health Insights 📊
+                        </h2>
+
+                        <p>
+                            Your recent health overview
+                        </p>
+
+                    </div>
+
+
+                    <span class="insight-status">
+
+                        ● Good
+
+                    </span>
+
+                </div>
+
+
+
+                <!-- HEART HEALTH -->
+
+                <div class="insight-row">
+
+                    <div class="insight-label">
+
+                        <span>
+                            ❤️
+                        </span>
+
+
+                        <div>
+
+                            <strong>
+                                Heart Health
+                            </strong>
+
+                            <small>
+                                Excellent
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="progress">
+
+                        <div
+                            class="progress-fill"
+                            style="width: 88%;">
+
+                        </div>
+
+                    </div>
+
+
+                    <strong>
+                        88%
+                    </strong>
+
+                </div>
+
+
+
+                <!-- BLOOD HEALTH -->
+
+                <div class="insight-row">
+
+                    <div class="insight-label">
+
+                        <span>
+                            🩸
+                        </span>
+
+
+                        <div>
+
+                            <strong>
+                                Blood Health
+                            </strong>
+
+                            <small>
+                                Good
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="progress">
+
+                        <div
+                            class="progress-fill"
+                            style="width: 76%;">
+
+                        </div>
+
+                    </div>
+
+
+                    <strong>
+                        76%
+                    </strong>
+
+                </div>
+
+
+
+                <!-- WELLNESS -->
+
+                <div class="insight-row">
+
+                    <div class="insight-label">
+
+                        <span>
+                            🧠
+                        </span>
+
+
+                        <div>
+
+                            <strong>
+                                Wellness
+                            </strong>
+
+                            <small>
+                                Good
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="progress">
+
+                        <div
+                            class="progress-fill"
+                            style="width: 82%;">
+
+                        </div>
+
+                    </div>
+
+
+                    <strong>
+                        82%
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- HEALTH TIP -->
+
+            <div class="health-tip">
+
+                <div class="tip-icon">
+
+                    💡
+
+                </div>
+
+
+                <h2>
+                    Health Tip of the Day
+                </h2>
+
+
+                <p>
+
+                    Staying hydrated can help maintain energy,
+                    improve concentration and support overall health.
+
+                </p>
+
+
+                <button
+                    type="button"
+                    onclick="showHealthTip()">
+
+                    Learn More →
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             HEALTHCARE TOOLS
+        ================================================== -->
+
+        <section class="dashboard-section">
+
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>
+                        Healthcare Tools 🚀
+                    </h2>
+
+                    <p>
+                        Explore your healthcare features
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="action-grid">
+
+
+                <!-- BLOOD ANALYSIS -->
+
+                <div class="action-card"
+                     id="blood-analysis">
+
+                    <div class="action-icon pink-bg">
+
+                        🩸
+
+                    </div>
+
+
+                    <div>
+
+                        <h3>
+                            Blood Report Analysis
+                        </h3>
+
+                        <p>
+                            Analyze important blood parameters
+                        </p>
+
+                    </div>
+
+
+                    <span class="arrow">
+                        🔜
+                    </span>
+
+                </div>
+
+
+
+                <!-- SYMPTOM CHECKER -->
+
+                <div class="action-card"
+                     id="symptom-checker">
+
+                    <div class="action-icon green-bg">
+
+                        🩺
+
+                    </div>
+
+
+                    <div>
+
+                        <h3>
+                            Smart Symptom Checker
+                        </h3>
+
+                        <p>
+                            Get general health information
+                        </p>
+
+                    </div>
+
+
+                    <span class="arrow">
+                        🔜
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             FOOTER
+        ================================================== -->
+
+        <footer class="dashboard-footer">
+
+            <p>
+
+                🔒
+                Your health information is handled responsibly.
+
+            </p>
+
+
+            <span>
+
+                © 2026 HealthCare AI
+
+            </span>
+
+        </footer>
+
+
+    </main>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script>
+
+        function showHealthTip() {
+
+            alert(
+                "💧 Health Tip:\n\n" +
+                "Try to stay hydrated throughout the day. " +
+                "Water supports normal body functions, " +
+                "energy and concentration.\n\n" +
+                "For personalized medical advice, " +
+                "consult a qualified healthcare professional."
+            );
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>

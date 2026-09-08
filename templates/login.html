@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Login | HealthCare AI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+
+<body class="auth-page">
+
+
+    <div class="auth-container">
+
+
+        <!-- ================= LEFT SIDE ================= -->
+
+        <div class="auth-left">
+
+
+            <div class="auth-logo">
+
+                🏥
+
+                <span>
+                    HealthCare <b>AI</b>
+                </span>
+
+            </div>
+
+
+            <div class="auth-content">
+
+
+                <div class="auth-icon">
+                    🤖
+                </div>
+
+
+                <h1>
+                    Welcome Back! 👋
+                </h1>
+
+
+                <p>
+                    Login to access your smart healthcare
+                    dashboard and health insights.
+                </p>
+
+
+                <div class="auth-features">
+
+
+                    <div>
+
+                        📄
+
+                        <span>
+                            Medical Report Analysis
+                        </span>
+
+                    </div>
+
+
+                    <div>
+
+                        🩺
+
+                        <span>
+                            Symptom Checker
+                        </span>
+
+                    </div>
+
+
+                    <div>
+
+                        🤖
+
+                        <span>
+                            AI Health Assistant
+                        </span>
+
+                    </div>
+
+
+                    <div>
+
+                        📊
+
+                        <span>
+                            Track Your Health Insights
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= RIGHT SIDE ================= -->
+
+        <div class="auth-right">
+
+
+            <div class="auth-card">
+
+
+                <!-- MOBILE LOGO -->
+
+                <div class="mobile-logo">
+
+                    🏥 HealthCare <b>AI</b>
+
+                </div>
+
+
+                <h2>
+                    Sign in to your account
+                </h2>
+
+
+                <p class="auth-subtitle">
+                    Enter your details to continue
+                </p>
+
+
+                <!-- ================= ERROR MESSAGE ================= -->
+
+                {% if error %}
+
+                <div class="login-error">
+
+                    ⚠️ {{ error }}
+
+                </div>
+
+                {% endif %}
+
+
+                <!-- ================= LOGIN FORM ================= -->
+
+                <form method="POST"
+                      action="{{ url_for('login') }}">
+
+
+                    <!-- EMAIL -->
+
+                    <label for="email">
+
+                        📧 Email Address
+
+                    </label>
+
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email"
+                        autocomplete="email"
+                        required
+                    >
+
+
+                    <!-- PASSWORD -->
+
+                    <label for="password">
+
+                        🔒 Password
+
+                    </label>
+
+
+                    <div class="password-box">
+
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+
+                        <button
+                            type="button"
+                            class="show-password"
+                            onclick="togglePassword()">
+
+                            👁️
+
+                        </button>
+
+
+                    </div>
+
+
+                    <!-- OPTIONS -->
+
+                    <div class="form-options">
+
+
+                        <label class="remember">
+
+                            <input
+                                type="checkbox"
+                                name="remember"
+                            >
+
+                            Remember me
+
+                        </label>
+
+
+                        <a href="#"
+                           onclick="forgotPassword(event)">
+
+                            Forgot Password?
+
+                        </a>
+
+
+                    </div>
+
+
+                    <!-- LOGIN BUTTON -->
+
+                    <button
+                        type="submit"
+                        class="auth-button">
+
+                        Login 🔐
+
+                    </button>
+
+
+                </form>
+
+
+                <!-- ================= DIVIDER ================= -->
+
+                <div class="divider">
+
+                    <span>
+                        OR
+                    </span>
+
+                </div>
+
+
+                <!-- ================= REGISTER ================= -->
+
+                <p class="register-text">
+
+                    Don't have an account?
+
+                    <a href="{{ url_for('register') }}">
+
+                        Create Account 🚀
+
+                    </a>
+
+                </p>
+
+
+                <!-- ================= HOME ================= -->
+
+                <a href="{{ url_for('home') }}"
+                   class="back-home">
+
+                    ← Back to Home
+
+                </a>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script>
+
+
+        // Show / Hide Password
+
+        function togglePassword() {
+
+            const password =
+                document.getElementById("password");
+
+
+            if (password.type === "password") {
+
+                password.type = "text";
+
+            }
+
+            else {
+
+                password.type = "password";
+
+            }
+
+        }
+
+
+        // Forgot Password
+
+        function forgotPassword(event) {
+
+            event.preventDefault();
+
+            alert(
+                "Forgot password feature will be added soon. 🔐"
+            );
+
+        }
+
+
+    </script>
+
+
+</body>
+
+</html>

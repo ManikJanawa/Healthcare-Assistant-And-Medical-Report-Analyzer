@@ -1,0 +1,3214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>AI Health Assistant | HealthCare AI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+
+        /* =====================================================
+           FEATURE PANEL
+        ===================================================== */
+
+        .feature-panel {
+            display: none;
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+
+        .feature-panel.active {
+            display: block;
+        }
+
+        .feature-panel h2 {
+            margin-bottom: 8px;
+        }
+
+        .feature-panel-description {
+            color: #6b7280;
+            margin-bottom: 22px;
+            line-height: 1.6;
+        }
+
+        .feature-form {
+            display: grid;
+            gap: 15px;
+        }
+
+        .feature-form label {
+            font-weight: 600;
+            margin-bottom: -8px;
+        }
+
+        .feature-form input,
+        .feature-form textarea,
+        .feature-form select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #d9dee8;
+            border-radius: 10px;
+            font-size: 14px;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        .feature-form input:focus,
+        .feature-form textarea:focus,
+        .feature-form select:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.08);
+        }
+
+        .feature-form textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .feature-button {
+            border: none;
+            border-radius: 10px;
+            padding: 13px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            background: #2563eb;
+            color: white;
+            transition: 0.2s;
+        }
+
+        .feature-button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .feature-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .feature-result {
+            display: none;
+            margin-top: 22px;
+            padding: 18px;
+            border-radius: 12px;
+            background: #f5f8ff;
+            border: 1px solid #dbe5ff;
+            line-height: 1.7;
+            overflow-wrap: anywhere;
+        }
+
+        .feature-result.show {
+            display: block;
+        }
+
+        .feature-result h3 {
+            margin-top: 0;
+        }
+
+        .feature-error {
+            background: #fff5f5;
+            border-color: #fecaca;
+            color: #991b1b;
+        }
+
+        .feature-success {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+        }
+
+        .upload-box {
+            border: 2px dashed #cbd5e1;
+            padding: 25px;
+            text-align: center;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .upload-box:hover {
+            background: #f8fafc;
+            border-color: #2563eb;
+        }
+
+        .upload-box p {
+            margin: 8px 0;
+        }
+
+        .blood-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .blood-field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .history-box {
+            margin-top: 25px;
+        }
+
+        .history-box h3 {
+            margin-bottom: 15px;
+        }
+
+        .history-item {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .history-item strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .history-item small {
+            color: #64748b;
+        }
+
+        .history-item p {
+            margin: 8px 0;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 15px;
+            color: #64748b;
+        }
+
+        .api-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 8px;
+        }
+
+        .api-dot {
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .empty-history {
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 10px;
+            color: #64748b;
+        }
+
+        @media (max-width: 700px) {
+
+            .blood-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-panel {
+                padding: 18px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body class="ai-page">
+
+
+<!-- =========================================================
+     SIDEBAR
+========================================================= -->
+
+<aside class="sidebar">
+
+    <div class="sidebar-logo">
+
+        🏥
+
+        <span>
+            HealthCare <b>AI</b>
+        </span>
+
+    </div>
+
+
+    <nav class="sidebar-menu">
+
+        <a href="{{ url_for('dashboard') }}">
+
+            🏠
+
+            <span>
+                Dashboard
+            </span>
+
+        </a>
+
+
+        <a href="{{ url_for('ai_assistant') }}"
+           class="active">
+
+            🤖
+
+            <span>
+                AI Assistant
+            </span>
+
+        </a>
+
+
+        <a href="#"
+           onclick="showFeature('medicalReports'); return false;">
+
+            📄
+
+            <span>
+                Medical Reports
+            </span>
+
+        </a>
+
+
+        <a href="#"
+           onclick="showFeature('bloodAnalysis'); return false;">
+
+            🩸
+
+            <span>
+                Blood Analysis
+            </span>
+
+        </a>
+
+
+        <a href="#"
+           onclick="showFeature('symptomChecker'); return false;">
+
+            🩺
+
+            <span>
+                Symptom Checker
+            </span>
+
+        </a>
+
+
+        <a href="#"
+           onclick="showFeature('healthInsights'); return false;">
+
+            📊
+
+            <span>
+                Health Insights
+            </span>
+
+        </a>
+
+    </nav>
+
+
+    <div class="sidebar-bottom">
+
+        <a href="#">
+
+            ⚙️
+
+            <span>
+                Settings
+            </span>
+
+        </a>
+
+
+        <a href="{{ url_for('logout') }}"
+           class="logout-link">
+
+            🚪
+
+            <span>
+                Logout
+            </span>
+
+        </a>
+
+    </div>
+
+</aside>
+
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main class="ai-main">
+
+
+<!-- =========================================================
+     TOP NAVBAR
+========================================================= -->
+
+<header class="ai-navbar">
+
+    <div>
+
+        <h2>
+            🤖 AI Health Assistant
+        </h2>
+
+        <p>
+            Your smart healthcare companion
+        </p>
+
+    </div>
+
+
+    <div class="profile-box">
+
+        <div class="profile-icon">
+
+            {{ session.get('user_name', 'U')[0].upper() }}
+
+        </div>
+
+
+        <div>
+
+            <strong>
+                {{ session.get('user_name', 'User') }}
+            </strong>
+
+            <small>
+                Health Member
+            </small>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+
+<!-- =========================================================
+     WELCOME
+========================================================= -->
+
+<section class="ai-welcome">
+
+    <div class="ai-welcome-icon">
+        🤖
+    </div>
+
+
+    <div>
+
+        <h1>
+            Hello, {{ session.get('user_name', 'User') }}! 👋
+        </h1>
+
+        <p>
+            I'm your AI Health Assistant.
+            Ask me about general health, nutrition,
+            symptoms and wellness.
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     MEDICAL REPORTS
+========================================================= -->
+
+<section id="medicalReports"
+         class="feature-panel">
+
+    <h2>
+        📄 Medical Reports
+    </h2>
+
+    <p class="feature-panel-description">
+
+        Upload a PDF or TXT medical report and let AI
+        explain the important findings in simple language.
+
+    </p>
+
+    <div class="api-status">
+        <span class="api-dot"></span>
+        Connected to Medical Report API
+    </div>
+
+
+    <form id="medicalReportForm"
+          class="feature-form">
+
+        <label>
+            Select Medical Report
+        </label>
+
+
+        <div class="upload-box"
+             onclick="document.getElementById('medicalReportFile').click()">
+
+            📄
+
+            <p>
+                Click here to select PDF or TXT report
+            </p>
+
+            <small id="selectedReportName">
+                No file selected
+            </small>
+
+        </div>
+
+
+        <input
+            type="file"
+            id="medicalReportFile"
+            accept=".pdf,.txt"
+            style="display:none;"
+        >
+
+
+        <button
+            type="submit"
+            class="feature-button"
+            id="medicalReportButton">
+
+            🔍 Analyze Medical Report
+
+        </button>
+
+    </form>
+
+
+    <div id="medicalReportResult"
+         class="feature-result">
+
+    </div>
+
+
+    <div class="history-box">
+
+        <h3>
+            Previous Reports
+        </h3>
+
+        <div id="medicalReportHistory">
+
+            <button
+                class="feature-button"
+                onclick="loadMedicalReportHistory()">
+
+                View Report History
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     BLOOD ANALYSIS
+========================================================= -->
+
+<section id="bloodAnalysis"
+         class="feature-panel">
+
+    <h2>
+        🩸 Blood Analysis
+    </h2>
+
+    <p class="feature-panel-description">
+
+        Enter your available blood-test values.
+        The AI will provide general educational interpretation.
+
+    </p>
+
+    <div class="api-status">
+        <span class="api-dot"></span>
+        Connected to Blood Analysis API
+    </div>
+
+
+    <form id="bloodAnalysisForm"
+          class="feature-form">
+
+
+        <div class="blood-grid">
+
+
+            <div class="blood-field">
+
+                <label>
+                    Hemoglobin
+                </label>
+
+                <input
+                    type="text"
+                    id="hemoglobin"
+                    placeholder="Example: 13.5 g/dL"
+                >
+
+            </div>
+
+
+            <div class="blood-field">
+
+                <label>
+                    Blood Glucose
+                </label>
+
+                <input
+                    type="text"
+                    id="bloodGlucose"
+                    placeholder="Example: 95 mg/dL"
+                >
+
+            </div>
+
+
+            <div class="blood-field">
+
+                <label>
+                    WBC
+                </label>
+
+                <input
+                    type="text"
+                    id="wbc"
+                    placeholder="Example: 7000 /µL"
+                >
+
+            </div>
+
+
+            <div class="blood-field">
+
+                <label>
+                    Platelets
+                </label>
+
+                <input
+                    type="text"
+                    id="platelets"
+                    placeholder="Example: 250000 /µL"
+                >
+
+            </div>
+
+
+            <div class="blood-field">
+
+                <label>
+                    RBC
+                </label>
+
+                <input
+                    type="text"
+                    id="rbc"
+                    placeholder="Example: 4.8 million/µL"
+                >
+
+            </div>
+
+
+            <div class="blood-field">
+
+                <label>
+                    Cholesterol
+                </label>
+
+                <input
+                    type="text"
+                    id="cholesterol"
+                    placeholder="Example: 180 mg/dL"
+                >
+
+            </div>
+
+
+            <div class="blood-field">
+
+                <label>
+                    Blood Pressure
+                </label>
+
+                <input
+                    type="text"
+                    id="bloodPressure"
+                    placeholder="Example: 120/80 mmHg"
+                >
+
+            </div>
+
+        </div>
+
+
+        <label>
+            Other Blood-Test Values
+        </label>
+
+        <textarea
+            id="otherValues"
+            placeholder="Enter any other values from your report..."
+        ></textarea>
+
+
+        <button
+            type="submit"
+            class="feature-button"
+            id="bloodAnalysisButton">
+
+            🧪 Analyze Blood Results
+
+        </button>
+
+    </form>
+
+
+    <div id="bloodAnalysisResult"
+         class="feature-result">
+
+    </div>
+
+
+    <div class="history-box">
+
+        <h3>
+            Previous Blood Analyses
+        </h3>
+
+        <div id="bloodHistory">
+
+            <button
+                class="feature-button"
+                onclick="loadBloodHistory()">
+
+                View Blood History
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     SYMPTOM CHECKER
+========================================================= -->
+
+<section id="symptomChecker"
+         class="feature-panel">
+
+    <h2>
+        🩺 Symptom Checker
+    </h2>
+
+    <p class="feature-panel-description">
+
+        Describe your symptoms and receive general
+        health guidance. This does not provide a diagnosis.
+
+    </p>
+
+    <div class="api-status">
+        <span class="api-dot"></span>
+        Connected to Symptom Checker API
+    </div>
+
+
+    <form id="symptomForm"
+          class="feature-form">
+
+
+        <label>
+            What symptoms are you experiencing?
+        </label>
+
+        <textarea
+            id="symptoms"
+            placeholder="Example: headache, mild fever and tiredness..."
+            required
+        ></textarea>
+
+
+        <label>
+            How long have you had these symptoms?
+        </label>
+
+        <input
+            type="text"
+            id="symptomDuration"
+            placeholder="Example: 2 days"
+        >
+
+
+        <label>
+            Severity
+        </label>
+
+        <select id="symptomSeverity">
+
+            <option value="">
+                Select severity
+            </option>
+
+            <option value="Mild">
+                Mild
+            </option>
+
+            <option value="Moderate">
+                Moderate
+            </option>
+
+            <option value="Severe">
+                Severe
+            </option>
+
+        </select>
+
+
+        <button
+            type="submit"
+            class="feature-button"
+            id="symptomButton">
+
+            🔎 Check Symptoms
+
+        </button>
+
+    </form>
+
+
+    <div id="symptomResult"
+         class="feature-result">
+
+    </div>
+
+
+    <div class="history-box">
+
+        <h3>
+            Previous Symptom Checks
+        </h3>
+
+        <div id="symptomHistory">
+
+            <button
+                class="feature-button"
+                onclick="loadSymptomHistory()">
+
+                View Symptom History
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     HEALTH INSIGHTS
+========================================================= -->
+
+<section id="healthInsights"
+         class="feature-panel">
+
+    <h2>
+        📊 Health Insights
+    </h2>
+
+    <p class="feature-panel-description">
+
+        Generate a personalized health summary using
+        your saved reports, blood analyses, symptoms
+        and available health information.
+
+    </p>
+
+    <div class="api-status">
+        <span class="api-dot"></span>
+        Connected to Health Insights API
+    </div>
+
+
+    <button
+        class="feature-button"
+        id="healthInsightButton"
+        onclick="generateHealthInsights()">
+
+        📊 Generate My Health Insights
+
+    </button>
+
+
+    <div id="healthInsightResult"
+         class="feature-result">
+
+    </div>
+
+
+    <div class="history-box">
+
+        <h3>
+            Previous Health Insights
+        </h3>
+
+        <div id="healthInsightHistory">
+
+            <button
+                class="feature-button"
+                onclick="loadHealthInsightHistory()">
+
+                View Previous Insights
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     CHAT CONTAINER
+========================================================= -->
+
+<section class="chat-container">
+
+
+    <div class="chat-header">
+
+        <div class="ai-status-icon">
+            🤖
+        </div>
+
+
+        <div class="chat-title">
+
+            <h3>
+                HealthCare AI
+            </h3>
+
+            <span class="online-status">
+                ● Online
+            </span>
+
+        </div>
+
+
+        <button
+            class="new-chat-button"
+            onclick="startNewChat()"
+            title="Start a new conversation">
+
+            ✨ New Chat
+
+        </button>
+
+    </div>
+
+
+
+    <div class="chat-messages"
+         id="chatMessages">
+
+
+        <div class="message ai-message">
+
+            <div class="message-avatar">
+                🤖
+            </div>
+
+
+            <div class="message-content">
+
+                <strong>
+                    HealthCare AI
+                </strong>
+
+                <p>
+                    Hello! 👋 I'm your AI Health Assistant.
+                    How can I help you today?
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="quick-questions">
+
+            <p>
+                Try asking:
+            </p>
+
+
+            <button onclick="askQuestion(
+                'How can I improve my daily health?'
+            )">
+
+                🌿 Daily health tips
+
+            </button>
+
+
+            <button onclick="askQuestion(
+                'What foods are good for a healthy diet?'
+            )">
+
+                🥗 Healthy diet
+
+            </button>
+
+
+            <button onclick="askQuestion(
+                'How much water should I drink daily?'
+            )">
+
+                💧 Hydration
+
+            </button>
+
+
+            <button onclick="askQuestion(
+                'How can I improve my sleep?'
+            )">
+
+                😴 Better sleep
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="chat-input-area">
+
+        <input
+            type="text"
+            id="userMessage"
+            placeholder="Ask your health question..."
+            autocomplete="off"
+            onkeypress="handleEnter(event)"
+        >
+
+
+        <button
+            class="send-button"
+            onclick="sendMessage()">
+
+            ➤
+
+        </button>
+
+    </div>
+
+
+
+    <div class="medical-disclaimer">
+
+        ⚠️
+
+        <span>
+            This AI provides general health information
+            and is not a substitute for professional
+            medical advice.
+        </span>
+
+    </div>
+
+</section>
+
+
+
+<footer class="dashboard-footer">
+
+    <p>
+        🔒 Your health information is handled responsibly.
+    </p>
+
+    <span>
+        © 2026 HealthCare AI
+    </span>
+
+</footer>
+
+
+</main>
+
+
+
+<script>
+
+
+/* =========================================================
+   API HELPER
+   All Flask API requests go through this function.
+========================================================= */
+
+async function apiRequest(
+    url,
+    options = {}
+) {
+
+    const response = await fetch(
+        url,
+        {
+            credentials: "same-origin",
+            ...options
+        }
+    );
+
+    let data;
+
+    try {
+
+        data = await response.json();
+
+    }
+
+    catch (error) {
+
+        throw new Error(
+            "Server returned an invalid response."
+        );
+
+    }
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            data.error ||
+            `Request failed with status ${response.status}`
+        );
+
+    }
+
+
+    return data;
+
+}
+
+
+
+/* =========================================================
+   FEATURE PANEL NAVIGATION
+========================================================= */
+
+function showFeature(featureId) {
+
+    const panels =
+        document.querySelectorAll(".feature-panel");
+
+
+    panels.forEach(function(panel) {
+
+        panel.classList.remove("active");
+
+    });
+
+
+    const selected =
+        document.getElementById(featureId);
+
+
+    if (selected) {
+
+        selected.classList.add("active");
+
+
+        selected.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+
+        /*
+         * Automatically load history
+         * whenever a panel is opened.
+         */
+
+        if (featureId === "medicalReports") {
+
+            loadMedicalReportHistory();
+
+        }
+
+        else if (featureId === "bloodAnalysis") {
+
+            loadBloodHistory();
+
+        }
+
+        else if (featureId === "symptomChecker") {
+
+            loadSymptomHistory();
+
+        }
+
+        else if (featureId === "healthInsights") {
+
+            loadHealthInsightHistory();
+
+        }
+
+    }
+
+}
+
+
+
+/* =========================================================
+   MEDICAL REPORT FILE NAME
+========================================================= */
+
+const medicalReportFile =
+    document.getElementById(
+        "medicalReportFile"
+    );
+
+
+if (medicalReportFile) {
+
+    medicalReportFile.addEventListener(
+        "change",
+        function() {
+
+            const file = this.files[0];
+
+
+            const nameElement =
+                document.getElementById(
+                    "selectedReportName"
+                );
+
+
+            if (file) {
+
+                nameElement.textContent =
+                    file.name;
+
+            }
+
+            else {
+
+                nameElement.textContent =
+                    "No file selected";
+
+            }
+
+        }
+    );
+
+}
+
+
+
+/* =========================================================
+   MEDICAL REPORT ANALYSIS API
+   POST /analyze-medical-report
+========================================================= */
+
+document
+    .getElementById("medicalReportForm")
+    .addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+
+            const fileInput =
+                document.getElementById(
+                    "medicalReportFile"
+                );
+
+
+            const file =
+                fileInput.files[0];
+
+
+            if (!file) {
+
+                alert(
+                    "Please select a medical report first."
+                );
+
+                return;
+
+            }
+
+
+            const allowedTypes = [
+                "application/pdf",
+                "text/plain"
+            ];
+
+
+            const extension =
+                file.name
+                    .toLowerCase()
+                    .split(".")
+                    .pop();
+
+
+            if (
+                extension !== "pdf" &&
+                extension !== "txt"
+            ) {
+
+                alert(
+                    "Only PDF and TXT files are allowed."
+                );
+
+                return;
+
+            }
+
+
+            const button =
+                document.getElementById(
+                    "medicalReportButton"
+                );
+
+
+            const result =
+                document.getElementById(
+                    "medicalReportResult"
+                );
+
+
+            const formData =
+                new FormData();
+
+
+            formData.append(
+                "report",
+                file
+            );
+
+
+            button.disabled = true;
+
+            button.textContent =
+                "⏳ Analyzing Report...";
+
+
+            result.classList.remove("show");
+
+            result.innerHTML = "";
+
+
+            try {
+
+                const data =
+                    await apiRequest(
+                        "/analyze-medical-report",
+                        {
+                            method: "POST",
+                            body: formData
+                        }
+                    );
+
+
+                if (data.success) {
+
+                    result.innerHTML = `
+
+                        <h3>
+                            📄 Report Analysis
+                        </h3>
+
+                        <p>
+                            <strong>
+                                Report:
+                            </strong>
+
+                            ${escapeHTML(
+                                data.filename || file.name
+                            )}
+                        </p>
+
+                        <hr>
+
+                        <div>
+                            ${formatAIResponse(
+                                data.analysis || ""
+                            )}
+                        </div>
+
+                    `;
+
+                    result.classList.add(
+                        "show",
+                        "feature-success"
+                    );
+
+
+                    /*
+                     * Refresh history after successful save.
+                     */
+
+                    loadMedicalReportHistory();
+
+                }
+
+                else {
+
+                    showFeatureError(
+                        result,
+                        data.error
+                    );
+
+                }
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Medical Report Error:",
+                    error
+                );
+
+
+                showFeatureError(
+                    result,
+                    error.message ||
+                    "Unable to analyze the report right now."
+                );
+
+            }
+
+            finally {
+
+                button.disabled = false;
+
+                button.textContent =
+                    "🔍 Analyze Medical Report";
+
+            }
+
+        }
+    );
+
+
+
+/* =========================================================
+   BLOOD ANALYSIS API
+   POST /analyze-blood
+========================================================= */
+
+document
+    .getElementById("bloodAnalysisForm")
+    .addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+
+            const button =
+                document.getElementById(
+                    "bloodAnalysisButton"
+                );
+
+
+            const result =
+                document.getElementById(
+                    "bloodAnalysisResult"
+                );
+
+
+            const data = {
+
+                hemoglobin:
+                    document.getElementById(
+                        "hemoglobin"
+                    ).value.trim(),
+
+                blood_glucose:
+                    document.getElementById(
+                        "bloodGlucose"
+                    ).value.trim(),
+
+                wbc:
+                    document.getElementById(
+                        "wbc"
+                    ).value.trim(),
+
+                platelets:
+                    document.getElementById(
+                        "platelets"
+                    ).value.trim(),
+
+                rbc:
+                    document.getElementById(
+                        "rbc"
+                    ).value.trim(),
+
+                cholesterol:
+                    document.getElementById(
+                        "cholesterol"
+                    ).value.trim(),
+
+                blood_pressure:
+                    document.getElementById(
+                        "bloodPressure"
+                    ).value.trim(),
+
+                other_values:
+                    document.getElementById(
+                        "otherValues"
+                    ).value.trim()
+
+            };
+
+
+            const hasValue =
+                Object.values(data).some(
+                    value => value !== ""
+                );
+
+
+            if (!hasValue) {
+
+                alert(
+                    "Please enter at least one blood value."
+                );
+
+                return;
+
+            }
+
+
+            button.disabled = true;
+
+            button.textContent =
+                "⏳ Analyzing Blood Results...";
+
+
+            result.classList.remove("show");
+
+            result.innerHTML = "";
+
+
+            try {
+
+                const responseData =
+                    await apiRequest(
+                        "/analyze-blood",
+                        {
+
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify(data)
+
+                        }
+                    );
+
+
+                if (responseData.success) {
+
+                    result.innerHTML = `
+
+                        <h3>
+                            🩸 Blood Analysis Result
+                        </h3>
+
+                        <hr>
+
+                        <div>
+                            ${formatAIResponse(
+                                responseData.analysis || ""
+                            )}
+                        </div>
+
+                    `;
+
+                    result.classList.add(
+                        "show",
+                        "feature-success"
+                    );
+
+
+                    /*
+                     * Refresh saved blood history.
+                     */
+
+                    loadBloodHistory();
+
+                }
+
+                else {
+
+                    showFeatureError(
+                        result,
+                        responseData.error
+                    );
+
+                }
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Blood Analysis Error:",
+                    error
+                );
+
+
+                showFeatureError(
+                    result,
+                    error.message ||
+                    "Unable to analyze blood results."
+                );
+
+            }
+
+            finally {
+
+                button.disabled = false;
+
+                button.textContent =
+                    "🧪 Analyze Blood Results";
+
+            }
+
+        }
+    );
+
+
+
+/* =========================================================
+   SYMPTOM CHECKER API
+   POST /check-symptoms
+========================================================= */
+
+document
+    .getElementById("symptomForm")
+    .addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+
+            const symptoms =
+                document.getElementById(
+                    "symptoms"
+                ).value.trim();
+
+
+            const duration =
+                document.getElementById(
+                    "symptomDuration"
+                ).value.trim();
+
+
+            const severity =
+                document.getElementById(
+                    "symptomSeverity"
+                ).value;
+
+
+            const button =
+                document.getElementById(
+                    "symptomButton"
+                );
+
+
+            const result =
+                document.getElementById(
+                    "symptomResult"
+                );
+
+
+            if (!symptoms) {
+
+                alert(
+                    "Please enter your symptoms."
+                );
+
+                return;
+
+            }
+
+
+            button.disabled = true;
+
+            button.textContent =
+                "⏳ Checking Symptoms...";
+
+
+            result.classList.remove("show");
+
+            result.innerHTML = "";
+
+
+            try {
+
+                const data =
+                    await apiRequest(
+                        "/check-symptoms",
+                        {
+
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+
+                                symptoms:
+                                    symptoms,
+
+                                duration:
+                                    duration,
+
+                                severity:
+                                    severity
+
+                            })
+
+                        }
+                    );
+
+
+                if (data.success) {
+
+                    result.innerHTML = `
+
+                        <h3>
+                            🩺 Symptom Guidance
+                        </h3>
+
+                        <p>
+                            <strong>
+                                Symptoms:
+                            </strong>
+
+                            ${escapeHTML(symptoms)}
+                        </p>
+
+                        <hr>
+
+                        <div>
+                            ${formatAIResponse(
+                                data.analysis || ""
+                            )}
+                        </div>
+
+                    `;
+
+                    result.classList.add(
+                        "show",
+                        "feature-success"
+                    );
+
+
+                    /*
+                     * Refresh symptom history.
+                     */
+
+                    loadSymptomHistory();
+
+                }
+
+                else {
+
+                    showFeatureError(
+                        result,
+                        data.error
+                    );
+
+                }
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Symptom Checker Error:",
+                    error
+                );
+
+
+                showFeatureError(
+                    result,
+                    error.message ||
+                    "Unable to check symptoms right now."
+                );
+
+            }
+
+            finally {
+
+                button.disabled = false;
+
+                button.textContent =
+                    "🔎 Check Symptoms";
+
+            }
+
+        }
+    );
+
+
+
+/* =========================================================
+   HEALTH INSIGHTS API
+   POST /generate-health-insights
+========================================================= */
+
+async function generateHealthInsights() {
+
+    const button =
+        document.getElementById(
+            "healthInsightButton"
+        );
+
+
+    const result =
+        document.getElementById(
+            "healthInsightResult"
+        );
+
+
+    button.disabled = true;
+
+    button.textContent =
+        "⏳ Generating Health Insights...";
+
+
+    result.classList.remove("show");
+
+    result.innerHTML = "";
+
+
+    try {
+
+        const data =
+            await apiRequest(
+                "/generate-health-insights",
+                {
+                    method: "POST"
+                }
+            );
+
+
+        if (data.success) {
+
+            result.innerHTML = `
+
+                <h3>
+                    📊 Your Health Insights
+                </h3>
+
+                <hr>
+
+                <div>
+                    ${formatAIResponse(
+                        data.insight || ""
+                    )}
+                </div>
+
+            `;
+
+            result.classList.add(
+                "show",
+                "feature-success"
+            );
+
+
+            /*
+             * Refresh history after generating insight.
+             */
+
+            loadHealthInsightHistory();
+
+        }
+
+        else {
+
+            showFeatureError(
+                result,
+                data.error
+            );
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Health Insights Error:",
+            error
+        );
+
+
+        showFeatureError(
+            result,
+            error.message ||
+            "Unable to generate health insights."
+        );
+
+    }
+
+    finally {
+
+        button.disabled = false;
+
+        button.textContent =
+            "📊 Generate My Health Insights";
+
+    }
+
+}
+
+
+
+/* =========================================================
+   MEDICAL REPORT HISTORY API
+   GET /medical-report-history
+========================================================= */
+
+async function loadMedicalReportHistory() {
+
+    const container =
+        document.getElementById(
+            "medicalReportHistory"
+        );
+
+
+    container.innerHTML = `
+        <div class="loading">
+            ⏳ Loading reports...
+        </div>
+    `;
+
+
+    try {
+
+        const data =
+            await apiRequest(
+                "/medical-report-history"
+            );
+
+
+        if (
+            !data.success ||
+            !Array.isArray(data.reports) ||
+            data.reports.length === 0
+        ) {
+
+            container.innerHTML = `
+                <div class="empty-history">
+                    📄 No previous medical reports found.
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        container.innerHTML =
+            data.reports.map(
+                function(report) {
+
+                    return `
+
+                        <div class="history-item">
+
+                            <strong>
+                                📄 ${escapeHTML(
+                                    report.report_name ||
+                                    report.filename ||
+                                    "Medical Report"
+                                )}
+                            </strong>
+
+                            <small>
+                                ${escapeHTML(
+                                    String(
+                                        report.created_at || ""
+                                    )
+                                )}
+                            </small>
+
+                            <div style="margin-top:10px;">
+                                ${formatAIResponse(
+                                    report.ai_analysis ||
+                                    report.analysis ||
+                                    ""
+                                )}
+                            </div>
+
+                        </div>
+
+                    `;
+
+                }
+            ).join("");
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Medical Report History Error:",
+            error
+        );
+
+
+        container.innerHTML = `
+            <p>
+                Unable to load report history.
+            </p>
+        `;
+
+    }
+
+}
+
+
+
+/* =========================================================
+   BLOOD HISTORY API
+   GET /blood-analysis-history
+========================================================= */
+
+async function loadBloodHistory() {
+
+    const container =
+        document.getElementById(
+            "bloodHistory"
+        );
+
+
+    container.innerHTML = `
+        <div class="loading">
+            ⏳ Loading blood history...
+        </div>
+    `;
+
+
+    try {
+
+        const data =
+            await apiRequest(
+                "/blood-analysis-history"
+            );
+
+
+        if (
+            !data.success ||
+            !Array.isArray(data.records) ||
+            data.records.length === 0
+        ) {
+
+            container.innerHTML = `
+                <div class="empty-history">
+                    🩸 No previous blood analyses found.
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        container.innerHTML =
+            data.records.map(
+                function(record) {
+
+                    return `
+
+                        <div class="history-item">
+
+                            <strong>
+                                🩸 Blood Analysis
+                            </strong>
+
+                            <small>
+                                ${escapeHTML(
+                                    String(
+                                        record.created_at || ""
+                                    )
+                                )}
+                            </small>
+
+
+                            <p>
+
+                                <strong>
+                                    Hemoglobin:
+                                </strong>
+
+                                ${escapeHTML(
+                                    record.hemoglobin || "-"
+                                )}
+
+                            </p>
+
+
+                            <p>
+
+                                <strong>
+                                    Glucose:
+                                </strong>
+
+                                ${escapeHTML(
+                                    record.blood_glucose || "-"
+                                )}
+
+                            </p>
+
+
+                            <p>
+
+                                <strong>
+                                    WBC:
+                                </strong>
+
+                                ${escapeHTML(
+                                    record.wbc || "-"
+                                )}
+
+                            </p>
+
+
+                            <p>
+
+                                <strong>
+                                    Platelets:
+                                </strong>
+
+                                ${escapeHTML(
+                                    record.platelets || "-"
+                                )}
+
+                            </p>
+
+
+                            <p>
+
+                                <strong>
+                                    RBC:
+                                </strong>
+
+                                ${escapeHTML(
+                                    record.rbc || "-"
+                                )}
+
+                            </p>
+
+
+                            <p>
+
+                                <strong>
+                                    Cholesterol:
+                                </strong>
+
+                                ${escapeHTML(
+                                    record.cholesterol || "-"
+                                )}
+
+                            </p>
+
+
+                            <p>
+
+                                <strong>
+                                    Blood Pressure:
+                                </strong>
+
+                                ${escapeHTML(
+                                    record.blood_pressure || "-"
+                                )}
+
+                            </p>
+
+
+                            <div style="margin-top:10px;">
+
+                                ${formatAIResponse(
+                                    record.ai_analysis ||
+                                    ""
+                                )}
+
+                            </div>
+
+                        </div>
+
+                    `;
+
+                }
+            ).join("");
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Blood History Error:",
+            error
+        );
+
+
+        container.innerHTML = `
+            <p>
+                Unable to load blood history.
+            </p>
+        `;
+
+    }
+
+}
+
+
+
+/* =========================================================
+   SYMPTOM HISTORY API
+   GET /symptom-history
+========================================================= */
+
+async function loadSymptomHistory() {
+
+    const container =
+        document.getElementById(
+            "symptomHistory"
+        );
+
+
+    container.innerHTML = `
+        <div class="loading">
+            ⏳ Loading symptom history...
+        </div>
+    `;
+
+
+    try {
+
+        const data =
+            await apiRequest(
+                "/symptom-history"
+            );
+
+
+        if (
+            !data.success ||
+            !Array.isArray(data.records) ||
+            data.records.length === 0
+        ) {
+
+            container.innerHTML = `
+                <div class="empty-history">
+                    🩺 No previous symptom checks found.
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        container.innerHTML =
+            data.records.map(
+                function(record) {
+
+                    return `
+
+                        <div class="history-item">
+
+                            <strong>
+                                🩺 Symptom Check
+                            </strong>
+
+                            <small>
+                                ${escapeHTML(
+                                    String(
+                                        record.created_at || ""
+                                    )
+                                )}
+                            </small>
+
+
+                            <p>
+
+                                <strong>
+                                    Symptoms:
+                                </strong>
+
+                                ${escapeHTML(
+                                    record.symptoms || "-"
+                                )}
+
+                            </p>
+
+
+                            <p>
+
+                                <strong>
+                                    Duration:
+                                </strong>
+
+                                ${escapeHTML(
+                                    record.duration || "-"
+                                )}
+
+                            </p>
+
+
+                            <p>
+
+                                <strong>
+                                    Severity:
+                                </strong>
+
+                                ${escapeHTML(
+                                    record.severity || "-"
+                                )}
+
+                            </p>
+
+
+                            <div style="margin-top:10px;">
+
+                                ${formatAIResponse(
+                                    record.ai_analysis ||
+                                    ""
+                                )}
+
+                            </div>
+
+                        </div>
+
+                    `;
+
+                }
+            ).join("");
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Symptom History Error:",
+            error
+        );
+
+
+        container.innerHTML = `
+            <p>
+                Unable to load symptom history.
+            </p>
+        `;
+
+    }
+
+}
+
+
+
+/* =========================================================
+   HEALTH INSIGHTS HISTORY API
+   GET /health-insights-history
+========================================================= */
+
+async function loadHealthInsightHistory() {
+
+    const container =
+        document.getElementById(
+            "healthInsightHistory"
+        );
+
+
+    container.innerHTML = `
+        <div class="loading">
+            ⏳ Loading previous insights...
+        </div>
+    `;
+
+
+    try {
+
+        const data =
+            await apiRequest(
+                "/health-insights-history"
+            );
+
+
+        if (
+            !data.success ||
+            !Array.isArray(data.insights) ||
+            data.insights.length === 0
+        ) {
+
+            container.innerHTML = `
+                <div class="empty-history">
+                    📊 No previous health insights found.
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        container.innerHTML =
+            data.insights.map(
+                function(item) {
+
+                    return `
+
+                        <div class="history-item">
+
+                            <strong>
+                                📊 Health Insight
+                            </strong>
+
+                            <small>
+                                ${escapeHTML(
+                                    String(
+                                        item.created_at || ""
+                                    )
+                                )}
+                            </small>
+
+
+                            <div style="margin-top:10px;">
+
+                                ${formatAIResponse(
+                                    item.insight || ""
+                                )}
+
+                            </div>
+
+                        </div>
+
+                    `;
+
+                }
+            ).join("");
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Health Insight History Error:",
+            error
+        );
+
+
+        container.innerHTML = `
+            <p>
+                Unable to load health insight history.
+            </p>
+        `;
+
+    }
+
+}
+
+
+
+/* =========================================================
+   SHOW FEATURE ERROR
+========================================================= */
+
+function showFeatureError(
+    element,
+    message
+) {
+
+    element.innerHTML = `
+
+        <h3>
+            ⚠️ Error
+        </h3>
+
+        <p>
+            ${escapeHTML(
+                message ||
+                "Something went wrong."
+            )}
+        </p>
+
+    `;
+
+
+    element.classList.remove(
+        "feature-success"
+    );
+
+
+    element.classList.add(
+        "show",
+        "feature-error"
+    );
+
+}
+
+
+
+/* =========================================================
+   CHAT - SEND MESSAGE
+   POST /ask-ai
+========================================================= */
+
+async function sendMessage() {
+
+    const input =
+        document.getElementById(
+            "userMessage"
+        );
+
+
+    const message =
+        input.value.trim();
+
+
+    if (message === "") {
+
+        return;
+
+    }
+
+
+    addUserMessage(
+        message
+    );
+
+
+    input.value = "";
+
+
+    addAIMessage(
+        "Thinking... 🤖"
+    );
+
+
+    try {
+
+        const data =
+            await apiRequest(
+                "/ask-ai",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        message:
+                            message
+                    })
+
+                }
+            );
+
+
+        removeThinkingMessage();
+
+
+        if (data.success) {
+
+            addAIMessage(
+                data.answer || ""
+            );
+
+        }
+
+        else {
+
+            addAIMessage(
+                "Sorry, I couldn't process your question. " +
+                (data.error || "")
+            );
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "AI Request Error:",
+            error
+        );
+
+
+        removeThinkingMessage();
+
+
+        addAIMessage(
+            "Sorry, something went wrong while connecting " +
+            "to the AI system. Please try again."
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   QUICK QUESTION
+========================================================= */
+
+function askQuestion(
+    question
+) {
+
+    const input =
+        document.getElementById(
+            "userMessage"
+        );
+
+
+    input.value =
+        question;
+
+
+    sendMessage();
+
+}
+
+
+
+/* =========================================================
+   USER MESSAGE
+========================================================= */
+
+function addUserMessage(
+    message
+) {
+
+    const chat =
+        document.getElementById(
+            "chatMessages"
+        );
+
+
+    const messageDiv =
+        document.createElement(
+            "div"
+        );
+
+
+    messageDiv.className =
+        "message user-message";
+
+
+    messageDiv.innerHTML = `
+
+        <div class="message-content">
+
+            <strong>
+                You
+            </strong>
+
+            <p>
+                ${escapeHTML(message)}
+            </p>
+
+        </div>
+
+
+        <div class="message-avatar">
+            👤
+        </div>
+
+    `;
+
+
+    chat.appendChild(
+        messageDiv
+    );
+
+
+    scrollToBottom();
+
+}
+
+
+
+/* =========================================================
+   AI MESSAGE
+========================================================= */
+
+function addAIMessage(
+    message
+) {
+
+    const chat =
+        document.getElementById(
+            "chatMessages"
+        );
+
+
+    const messageDiv =
+        document.createElement(
+            "div"
+        );
+
+
+    messageDiv.className =
+        "message ai-message";
+
+
+    messageDiv.innerHTML = `
+
+        <div class="message-avatar">
+            🤖
+        </div>
+
+
+        <div class="message-content">
+
+            <strong>
+                HealthCare AI
+            </strong>
+
+            <div class="ai-response">
+                ${formatAIResponse(message)}
+            </div>
+
+        </div>
+
+    `;
+
+
+    chat.appendChild(
+        messageDiv
+    );
+
+
+    scrollToBottom();
+
+}
+
+
+
+/* =========================================================
+   FORMAT AI RESPONSE
+========================================================= */
+
+function formatAIResponse(
+    message
+) {
+
+    let text =
+        String(
+            message || ""
+        );
+
+
+    text =
+        escapeHTML(text);
+
+
+    text =
+        text.replace(
+            /\r\n/g,
+            "\n"
+        );
+
+
+    text =
+        text.replace(
+            /\r/g,
+            "\n"
+        );
+
+
+    text =
+        text.replace(
+            /[ \t]+$/gm,
+            ""
+        );
+
+
+    /*
+     * Bold markdown
+     */
+
+    text =
+        text.replace(
+            /\*\*(.*?)\*\*/g,
+            "<strong>$1</strong>"
+        );
+
+
+    /*
+     * Numbered headings
+     */
+
+    text =
+        text.replace(
+            /(^|\n)\s*(\d+)\.\s*<strong>(.*?)<\/strong>\s*:\s*/g,
+            "$1<strong>$2. $3</strong>\n"
+        );
+
+
+    text =
+        text.replace(
+            /(^|\n)\s*(\d+)\.\s*<strong>(.*?)<\/strong>\s*/g,
+            "$1<strong>$2. $3</strong>\n"
+        );
+
+
+    /*
+     * Normal numbered list
+     */
+
+    text =
+        text.replace(
+            /(^|\n)\s*(\d+)\.\s+/g,
+            "$1<strong>$2.</strong> "
+        );
+
+
+    /*
+     * Bullet list
+     */
+
+    text =
+        text.replace(
+            /(^|\n)\s*[-*]\s+/g,
+            "$1• "
+        );
+
+
+    /*
+     * New lines
+     */
+
+    text =
+        text.replace(
+            /\n/g,
+            "<br>"
+        );
+
+
+    /*
+     * Avoid excessive empty lines
+     */
+
+    text =
+        text.replace(
+            /(<br>\s*){3,}/g,
+            "<br><br>"
+        );
+
+
+    text =
+        text.replace(
+            /^(\s*<br>)+/,
+            ""
+        );
+
+
+    text =
+        text.replace(
+            /(<br>\s*)+$/,
+            ""
+        );
+
+
+    text =
+        text.replace(
+            /(<strong>\d+\.\s*.*?<\/strong>)<br><br>/g,
+            "$1<br>"
+        );
+
+
+    return text;
+
+}
+
+
+
+/* =========================================================
+   REMOVE THINKING MESSAGE
+========================================================= */
+
+function removeThinkingMessage() {
+
+    const messages =
+        document.querySelectorAll(
+            ".ai-message"
+        );
+
+
+    if (messages.length === 0) {
+
+        return;
+
+    }
+
+
+    const lastMessage =
+        messages[
+            messages.length - 1
+        ];
+
+
+    const messageText =
+        lastMessage.querySelector(
+            ".message-content .ai-response"
+        );
+
+
+    if (
+        messageText &&
+        messageText.textContent.trim() ===
+        "Thinking... 🤖"
+    ) {
+
+        lastMessage.remove();
+
+    }
+
+}
+
+
+
+/* =========================================================
+   NEW CHAT
+   POST /clear-ai-memory
+========================================================= */
+
+async function startNewChat() {
+
+    try {
+
+        const data =
+            await apiRequest(
+                "/clear-ai-memory",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    }
+
+                }
+            );
+
+
+        if (data.success) {
+
+            resetChatInterface();
+
+        }
+
+        else {
+
+            alert(
+                data.error ||
+                "Unable to start a new chat."
+            );
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "New Chat Error:",
+            error
+        );
+
+
+        alert(
+            error.message ||
+            "Unable to clear the conversation. Please try again."
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   RESET CHAT
+========================================================= */
+
+function resetChatInterface() {
+
+    const chat =
+        document.getElementById(
+            "chatMessages"
+        );
+
+
+    chat.innerHTML = `
+
+        <div class="message ai-message">
+
+            <div class="message-avatar">
+                🤖
+            </div>
+
+            <div class="message-content">
+
+                <strong>
+                    HealthCare AI
+                </strong>
+
+                <p>
+                    Hello! 👋 I'm your AI Health Assistant.
+                    How can I help you today?
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="quick-questions">
+
+            <p>
+                Try asking:
+            </p>
+
+
+            <button onclick="askQuestion(
+                'How can I improve my daily health?'
+            )">
+
+                🌿 Daily health tips
+
+            </button>
+
+
+            <button onclick="askQuestion(
+                'What foods are good for a healthy diet?'
+            )">
+
+                🥗 Healthy diet
+
+            </button>
+
+
+            <button onclick="askQuestion(
+                'How much water should I drink daily?'
+            )">
+
+                💧 Hydration
+
+            </button>
+
+
+            <button onclick="askQuestion(
+                'How can I improve my sleep?'
+            )">
+
+                😴 Better sleep
+
+            </button>
+
+        </div>
+
+    `;
+
+
+    scrollToBottom();
+
+
+    document
+        .getElementById(
+            "userMessage"
+        )
+        .focus();
+
+}
+
+
+
+/* =========================================================
+   ENTER KEY
+========================================================= */
+
+function handleEnter(
+    event
+) {
+
+    if (
+        event.key === "Enter"
+    ) {
+
+        event.preventDefault();
+
+        sendMessage();
+
+    }
+
+}
+
+
+
+/* =========================================================
+   SCROLL
+========================================================= */
+
+function scrollToBottom() {
+
+    const chat =
+        document.getElementById(
+            "chatMessages"
+        );
+
+
+    if (!chat) {
+
+        return;
+
+    }
+
+
+    chat.scrollTop =
+        chat.scrollHeight;
+
+}
+
+
+
+/* =========================================================
+   SECURITY
+========================================================= */
+
+function escapeHTML(
+    text
+) {
+
+    const div =
+        document.createElement(
+            "div"
+        );
+
+
+    div.textContent =
+        text == null
+            ? ""
+            : String(text);
+
+
+    return div.innerHTML;
+
+}
+
+
+
+/* =========================================================
+   INITIALIZATION
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        /*
+         * Chat is visible by default.
+         * Feature panels open only when
+         * clicked from sidebar.
+         */
+
+        const panels =
+            document.querySelectorAll(
+                ".feature-panel"
+            );
+
+
+        panels.forEach(function(panel) {
+
+            panel.classList.remove(
+                "active"
+            );
+
+        });
+
+
+        /*
+         * Make sure chat starts at bottom.
+         */
+
+        scrollToBottom();
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>
